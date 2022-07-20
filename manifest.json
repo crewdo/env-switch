@@ -1,0 +1,15 @@
+{
+  "name": "Eber",
+  "manifest_version": 2,
+  "version": "1.0",
+  "description": "Eber Helper",
+  "background": {
+    "scripts": [
+      "background/main.js"
+    ]
+  },
+  "permissions": [
+    "contextMenus",
+    "tabs"
+  ]
+}
