@@ -2,9 +2,9 @@ let envMappings = [
     {
         platform: 'xm',
         urls: [
-            // {
-            //     value: 'xm.localhost', env: 'local'
-            // },
+            {
+                value: 'xm.localhost', env: 'local'
+            },
             {
                 value: 'dev-admin.eber.co', env: 'dev'
             },
@@ -19,9 +19,9 @@ let envMappings = [
     {
         platform: 'app',
         urls: [
-            // {
-            //     value: 'yummypin.igift.localhost', env: 'local'
-            // },
+            {
+                value: 'yummypin.igift.localhost', env: 'local'
+            },
             {
                 value: 'yummypin.igift.co', env: 'dev'
             },
@@ -61,9 +61,13 @@ function createContextMenus(url) {
 
     if (currentMapped.length > 0) {
         currentPlatform = currentMapped[0].platform;
-    } else {
+    }
+    else {
         return;
     }
+
+    //for sure
+    chrome.contextMenus.removeAll();
 
     currentMapped[0].urls.map(function (e) {
         if(e.value !== currentHostName) {
@@ -74,11 +78,13 @@ function createContextMenus(url) {
                 title: "Open in " + currentPlatform.toUpperCase() + " " + e.env.toUpperCase(),
                 contexts: ["all"],
                 onclick: function () {
-                    openTab(intendedUrl);
+                    chrome.tabs.create({
+                        url: intendedUrl
+                    });
                 }
             });
         }
-    })
+    });
 }
 
 function generateIntendedUrl(currentHref, newHost)
@@ -92,20 +98,12 @@ function generateIntendedUrl(currentHref, newHost)
     }
 
     parsedUrl.hostname = newHost;
+    parsedUrl.protocol = 'http://';
 
     return parsedUrl.toString();
 }
 
-function openTab(intendedUrl) {
-    chrome.tabs.create({
-        url: intendedUrl.replace('https://', 'http://')
-    });
-}
-
 function getCurrentTabUrl(callback) {
-
-    chrome.contextMenus.removeAll();
-
     chrome.tabs.query({
         active: true,
         currentWindow: true
@@ -122,6 +120,12 @@ chrome.tabs.onActivated.addListener(function () {
 });
 
 chrome.tabs.onUpdated.addListener(function () {
+    getCurrentTabUrl(function (url) {
+        createContextMenus(url);
+    });
+});
+
+chrome.tabs.onHighlighted.addListener(function () {
     getCurrentTabUrl(function (url) {
         createContextMenus(url);
     });
