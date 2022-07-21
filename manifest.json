@@ -1,11 +1,11 @@
 {
-  "name": "Eber",
+  "name": "Eber ENV",
   "manifest_version": 2,
   "version": "1.0",
-  "description": "Eber Helper",
+  "description": "Eber ENV",
   "background": {
     "scripts": [
-      "background/main.js"
+      "main.js"
     ]
   },
   "permissions": [
